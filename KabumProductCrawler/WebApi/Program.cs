@@ -1,6 +1,7 @@
 using AutoMapper;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
+using Domain.Model;
 using Domain.Service;
 using Infrastructure.Configuration;
 using Infrastructure.Helpers;
@@ -28,6 +29,9 @@ builder.Services.AddDbContext<BaseContext>(options =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddTransient<IWebCrawlerService, WebCrawlerService>();
+
+builder.Services.Configure<KabumUrlOptions>(builder.Configuration.GetSection("KabumUrl"));
 
 #endregion Dependency Injection Configuration
 
