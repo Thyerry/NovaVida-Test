@@ -44,6 +44,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    var db = app.Services.CreateScope().ServiceProvider.GetService<BaseContext>();
+    db?.Database.EnsureCreated();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

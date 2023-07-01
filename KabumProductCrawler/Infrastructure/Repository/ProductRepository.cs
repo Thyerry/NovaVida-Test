@@ -2,72 +2,52 @@
 using Entity.Entity;
 using Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System;
 
-namespace Infrastructure.Repository;
-
-public class ProductRepository : IProductRepository, IDisposable
+namespace Infrastructure.Repository
 {
-    private readonly DbContextOptions<BaseContext> _options;
-
-    public ProductRepository()
+    public class ProductRepository : IProductRepository
     {
-        _options = new DbContextOptions<BaseContext>();
-    }
+        private readonly BaseContext _dbContext;
 
-    public async Task<List<Product>> Get()
-    {
-        using (var database = new BaseContext(_options))
+        public ProductRepository(BaseContext context)
         {
-            return await database.Products.ToListAsync();
+            _dbContext = context ?? throw new ArgumentNullException(nameof(context));
         }
-    }
-
-    public async Task<Product?> GetById(int id)
-    {
-        using (var database = new BaseContext(_options))
+        
+        public async Task<List<Product>> Get()
         {
-            return await database.Products.FirstOrDefaultAsync(p => p.Id == id);
+            return await _dbContext.Products.ToListAsync();
         }
-    }
 
-    public async Task<Product> Insert(Product product)
-    {
-        using (var database = new BaseContext(_options))
+        public async Task<Product?> GetById(int id)
         {
-            var insertedProduct = await database.Products.AddAsync(product);
-            await database.SaveChangesAsync();
+            return await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<Product> Insert(Product product)
+        {
+            var insertedProduct = await _dbContext.Products.AddAsync(product);
+            await _dbContext.SaveChangesAsync();
             return insertedProduct.Entity;
         }
-    }
 
-    public async Task InsertChunk(List<Product> products)
-    {
-        using (var database = new BaseContext(_options))
+        public async Task InsertChunk(List<Product> products)
         {
-            await database.Products.AddRangeAsync(products);
-            await database.SaveChangesAsync();
+            await _dbContext.Products.AddRangeAsync(products);
+            await _dbContext.SaveChangesAsync();
         }
-    }
 
-    public async Task Update(Product product)
-    {
-        using (var database = new BaseContext(_options))
+        public async Task Update(Product product)
         {
-            database.Products.Update(product);
-            await database.SaveChangesAsync();
+            _dbContext.Products.Update(product);
+            await _dbContext.SaveChangesAsync();
         }
-    }
 
-    public async Task Delete(Product product)
-    {
-        using (var database = new BaseContext(_options))
+        public async Task Delete(Product product)
         {
-            database.Remove(product);
-            await database.SaveChangesAsync();
+            _dbContext.Products.Remove(product);
+            await _dbContext.SaveChangesAsync();
         }
-    }
-
-    public void Dispose()
-    {
     }
 }
