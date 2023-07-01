@@ -10,7 +10,7 @@ public interface IProductService
 
     Task<ProductModel> Insert(ProductModel product);
 
-    Task<ProductModel> InsertChunk(List<ProductModel> products);
+    Task InsertChunk(List<ProductModel> products);
 
     Task Update(ProductModel product);
 
