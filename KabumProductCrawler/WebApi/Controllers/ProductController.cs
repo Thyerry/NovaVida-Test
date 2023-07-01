@@ -11,10 +11,12 @@ namespace WebApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IWebCrawlerService _webCrawlerService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IWebCrawlerService webCrawlerService)
         {
             _productService = productService;
+            _webCrawlerService = webCrawlerService;
         }
 
         [HttpGet]
@@ -23,12 +25,13 @@ namespace WebApi.Controllers
             return Ok(await _productService.Get());
         }
 
-        [HttpPost]
-        [Route("chunk")]
-        public async Task<IActionResult> InsertChunk(List<ProductModel> products)
+        [HttpGet]
+        [Route("Search")]
+        public async Task<IActionResult> Get(string productSearchTerm)
         {
-            await _productService.InsertChunk(products);
-            return Ok();
+            var products = await _webCrawlerService.GetProductsFromKabum(productSearchTerm);
+            await _productService.InsertOrUpdateProductsAsync(products);
+            return Ok(products);
         }
 
         [HttpPost]

@@ -13,6 +13,8 @@ public interface IProductRepository
     Task InsertChunk(List<Product> products);
 
     Task Update(Product product);
+    
+    Task UpdateChunk(List<Product> product);
 
     Task Delete(Product product);
 }

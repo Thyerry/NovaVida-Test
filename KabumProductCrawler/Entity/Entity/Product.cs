@@ -19,4 +19,13 @@ public class Product
 
     [Column("IMAGE_URL")]
     public string ImageUrl { get; set; }
+    
+    public bool Equals(Product prd)
+    {
+        return Id == prd.Id
+               && Name == prd.Name
+               && Price == prd.Price
+               && Url == prd.Url
+               && ImageUrl == prd.ImageUrl;
+    }
 }

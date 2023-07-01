@@ -43,6 +43,12 @@ namespace Infrastructure.Repository
             _dbContext.Products.Update(product);
             await _dbContext.SaveChangesAsync();
         }
+        
+        public async Task UpdateChunk(List<Product> productsToUpdate)
+        {
+            _dbContext.Products.UpdateRange(productsToUpdate);
+            await _dbContext.SaveChangesAsync(); 
+        }
 
         public async Task Delete(Product product)
         {

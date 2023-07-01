@@ -1,7 +1,7 @@
 ﻿using Domain.Contracts.Service;
 using Domain.Model;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using System.Globalization;
 
 namespace Domain.Service;
@@ -10,14 +10,20 @@ public class WebCrawlerService : IWebCrawlerService
 {
     private readonly KabumUrlOptions _kabumUrlOptions;
 
-    public WebCrawlerService(IOptionsSnapshot<KabumUrlOptions> options)
+    public WebCrawlerService(IConfiguration configuration)
     {
-        _kabumUrlOptions = options.Value;
+        _kabumUrlOptions = new KabumUrlOptions
+        {
+            ProductUrl = configuration["KabumUrls:ProductUrl"] ?? throw new ArgumentNullException(nameof(configuration)),
+            ReviewEndpoint = configuration["KabumUrls:ReviewEndpoint"] ?? throw new ArgumentNullException(nameof(configuration)),
+            SearchUrl = configuration["KabumUrls:SearchUrl"] ?? throw new ArgumentNullException(nameof(configuration))
+        };
     }
 
     public async Task<List<ProductModel>> GetProductsFromKabum(string productSearchTerm)
     {
-        var loadUrl = $"{_kabumUrlOptions.SearchUrl}/mouse-razer";
+        productSearchTerm = string.Join("-", productSearchTerm.Split(" "));
+        var loadUrl = $"{_kabumUrlOptions.SearchUrl}/{productSearchTerm}";
         var web = new HtmlWeb();
         var doc = await web.LoadFromWebAsync(loadUrl);
         var productNodes = doc.DocumentNode.SelectNodes("//a[@class='sc-d55b419d-10 izMLCN productLink']");
@@ -41,7 +47,7 @@ public class WebCrawlerService : IWebCrawlerService
         var productId = ParseNodeAttributeToInt(node, "data-smarthintproductid");
         var productName = GetNodeInnerText(node, $"{node.XPath}/div/button/div");
         var productPrice = GetPriceFromNodeInnerText(node, $"{node.XPath}/div/div/span[2]");
-        var productImageUrl = GetNodeAttribute(node, $"{node.XPath}/img", "src");
+        var productImageUrl = GetNodeAttribute(node, "src", $"{node.XPath}/img");
         var productUrl = GetNodeAttribute(node, "href");
 
         return new ProductModel
@@ -69,9 +75,9 @@ public class WebCrawlerService : IWebCrawlerService
     private double GetPriceFromNodeInnerText(HtmlNode node, string xPath)
     {
         var innerText = GetNodeInnerText(node, xPath);
-        if (innerText != null && innerText.Split(" ").Length > 1)
+        if (innerText != null && innerText.Split().Length > 1)
         {
-            var price = innerText.Split(" ")[1];
+            var price = innerText.Split()[1];
             return double.TryParse(price, NumberStyles.Any, new CultureInfo("pt-BR"), out var parsedPrice)
                 ? parsedPrice
                 : 0.0;
@@ -80,9 +86,9 @@ public class WebCrawlerService : IWebCrawlerService
         return 0.0;
     }
 
-    private string GetNodeAttribute(HtmlNode node, string xPath, string attr = "")
+    private string GetNodeAttribute(HtmlNode node, string attr, string xPath = "")
     {
-        var selectedNode = string.IsNullOrEmpty(attr)
+        var selectedNode = string.IsNullOrEmpty(xPath)
             ? node
             : node.SelectSingleNode(xPath);
         return selectedNode?.GetAttributeValue(attr, "");
