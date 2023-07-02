@@ -5,10 +5,18 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ApiService } from './apiService.model';
+import { AppRoutingModule } from './app-routing.module';
+import { DetailsComponent } from './details/details.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, ReactiveFormsModule, HttpClientModule],
+  declarations: [AppComponent, DetailsComponent, SearchComponent],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+  ],
   providers: [ApiService],
   bootstrap: [AppComponent],
 })

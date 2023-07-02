@@ -1,0 +1,29 @@
+<form [formGroup]="form" class="search-form">
+    <fieldset>
+      <input
+        type="text"
+        placeholder="Search from Kabum web store"
+        formControlName="search"
+      />
+      <button (click)="searchProducts()">Search!</button>
+    </fieldset>
+  </form>
+  
+  <ul class="grid">
+    <li *ngFor="let product of products">
+      <div class="image-container">
+        <a [routerLink]="['/details', product.id]">
+          <img [src]="product.imageUrl" alt="Product Image" />
+        </a>
+      </div>
+      <div class="product-details">
+        <div class="product-name">
+          <a [routerLink]="['/details', product.id]">
+            {{ product.name }}
+          </a>
+        </div>
+        <div class="product-price">R$ {{ product.price }}</div>
+      </div>
+    </li>
+  </ul>
+  
