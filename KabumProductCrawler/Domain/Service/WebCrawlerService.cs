@@ -2,8 +2,8 @@
 using Domain.Model;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
-using System.Globalization;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Domain.Service;
 
@@ -19,7 +19,7 @@ public class WebCrawlerService : IWebCrawlerService
                 configuration["KabumUrls:ProductUrl"] ?? throw new ArgumentNullException(nameof(configuration)),
             ReviewEndpoint =
                 configuration["KabumUrls:ReviewEndpoint"] ?? throw new ArgumentNullException(nameof(configuration)),
-            SearchUrl = 
+            SearchUrl =
                 configuration["KabumUrls:SearchUrl"] ?? throw new ArgumentNullException(nameof(configuration))
         };
     }
@@ -95,7 +95,7 @@ public class WebCrawlerService : IWebCrawlerService
         return selectedNode?.GetAttributeValue(attr, "");
     }
 
-    #endregion
+    #endregion GetProductsFromKabum
 
     #region GetProductReviews
 
@@ -127,5 +127,5 @@ public class WebCrawlerService : IWebCrawlerService
         return JsonConvert.DeserializeObject<ProductReviews>(content);
     }
 
-    #endregion
+    #endregion GetProductReviews
 }

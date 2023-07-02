@@ -25,9 +25,9 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("search")]
-        public async Task<IActionResult> SearchProducts(string productSearchTerm)
+        public async Task<IActionResult> SearchProducts(string search)
         {
-            var products = await _webCrawlerService.GetProductsFromKabum(productSearchTerm);
+            var products = await _webCrawlerService.GetProductsFromKabum(search);
             await _productService.InsertOrUpdateProductsAsync(products);
             return Ok(products);
         }
