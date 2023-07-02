@@ -6,5 +6,5 @@ public interface IWebCrawlerService
 {
     Task<List<ProductModel>> GetProductsFromKabum(string productSearchTerm);
 
-    Task<List<ProductReview>> GetProductReviews(int quantity);
+    Task<ProductReviews> GetProductReviews(int productId, int quantity);
 }

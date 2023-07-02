@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Domain.Contracts.Service;
 using Domain.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +24,20 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("Search")]
-        public async Task<IActionResult> Get(string productSearchTerm)
+        [Route("search")]
+        public async Task<IActionResult> SearchProducts(string productSearchTerm)
         {
             var products = await _webCrawlerService.GetProductsFromKabum(productSearchTerm);
             await _productService.InsertOrUpdateProductsAsync(products);
             return Ok(products);
+        }
+
+        [HttpGet]
+        [Route("reviews")]
+        public async Task<IActionResult> GetProductReviews(int productId, int quantity = 5)
+        {
+            var productReviews = await _webCrawlerService.GetProductReviews(productId, quantity);
+            return Ok(productReviews);
         }
 
         [HttpPost]

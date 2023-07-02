@@ -1,8 +1,15 @@
-﻿namespace Domain.Model;
+﻿using Newtonsoft.Json;
+
+namespace Domain.Model;
 
 public class Cliente
 {
-    public string nome { get; set; }
-    public string cidade { get; set; }
-    public string uf { get; set; }
+    [JsonProperty("nome")]
+    public string Nome { get; set; }
+
+    [JsonProperty("cidade")]
+    public string Cidade { get; set; }
+
+    [JsonProperty("uf")]
+    public string Uf { get; set; }
 }
