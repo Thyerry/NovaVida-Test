@@ -12,7 +12,7 @@ import { ApiService } from '../apiService.model';
 export class SearchComponent {
   public form: FormGroup;
   public products: Product[] = [];
-  public isLoading: boolean = false;
+  public noSearches: boolean = false;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.form = this.fb.group({
@@ -21,14 +21,14 @@ export class SearchComponent {
   }
   
   public searchProducts(): void {
-    this.isLoading = true;
-    const observador = {
+    this.noSearches = true;
+    const observer = {
       next: (res: Product[]) => (this.products = res),
       error: (err: Error) => console.error(err),
     };
     const searchTerm: String = this.form.controls['search'].value;
     const response: Observable<any> =
       this.apiService.searchProducts(searchTerm);
-    response.subscribe(observador);
+    response.subscribe(observer);
   }
 }

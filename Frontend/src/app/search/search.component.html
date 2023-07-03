@@ -1,14 +1,14 @@
 <form [formGroup]="form" class="search-form">
-    <fieldset>
-      <input
-        type="text"
-        placeholder="Search from Kabum web store"
-        formControlName="search"
-      />
-      <button (click)="searchProducts()">Search!</button>
-    </fieldset>
-  </form>
-  
+  <fieldset>
+    <input
+      type="text"
+      placeholder="Search from Kabum web store"
+      formControlName="search"
+    />
+    <button (click)="searchProducts()">Search!</button>
+  </fieldset>
+</form>
+<div *ngIf="products.length > 0; else noProducts" class="result-container">
   <ul class="grid">
     <li *ngFor="let product of products">
       <div class="image-container">
@@ -26,4 +26,7 @@
       </div>
     </li>
   </ul>
-  
+</div>
+<ng-template #noProducts>
+  <div class="no-products">No Products 😣</div>
+</ng-template>

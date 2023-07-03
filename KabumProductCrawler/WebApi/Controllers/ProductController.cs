@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("product")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -23,6 +23,12 @@ namespace WebApi.Controllers
             return Ok(await _productService.Get());
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await _productService.GetById(id));
+        }
+
         [HttpGet]
         [Route("search")]
         public async Task<IActionResult> SearchProducts(string search)
@@ -37,7 +43,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetProductReviews(int productId, int quantity = 5)
         {
             var productReviews = await _webCrawlerService.GetProductReviews(productId, quantity);
-            return Ok(productReviews);
+            return Ok(productReviews.Opinioes);
         }
 
         [HttpPost]
@@ -54,7 +60,7 @@ namespace WebApi.Controllers
             return Accepted();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _productService.Delete(id);

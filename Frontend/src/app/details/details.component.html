@@ -1,3 +1,30 @@
-<p>details works!</p>
-<h1>{{ itemId }}</h1>
+<div *ngIf="product && reviews; else loading">
+  <div class="product-details">
+    <h2>{{ product.name }}</h2>
+    <div>
+      <img [src]="product.imageUrl" [alt]="product.name" />
+      <h2 class="price-h2">R$ {{ product.price }}</h2>
+    </div>
+  </div>
 
+  <div class="review-section">
+    <h2>Reviews</h2>
+    <ul *ngIf="reviews.length > 0; else noReviews">
+      <li *ngFor="let review of reviews" class="review">
+        <div class="review-header">
+          <h3>{{ review.cliente.nome }}</h3>
+          <p>{{ review.data }}</p>
+        </div>
+        <p>{{ review.opiniaoText }}</p>
+        <p><strong>Rating:</strong> {{ review.avaliacao }}</p>
+      </li>
+    </ul>
+    <ng-template #noReviews>
+      <p>No reviews available.</p>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-spinner"></div>
+</ng-template>
